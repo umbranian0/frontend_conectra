@@ -1,4 +1,4 @@
-﻿# Conectra Frontend Prototype
+# Conectra Frontend Prototype
 
 React + Vite frontend prototype prepared to connect with a Strapi backend.
 
@@ -32,8 +32,26 @@ Create a local `.env` file from `.env.example`.
 - `VITE_STRAPI_AUTH_ENDPOINT`: auth endpoint (default `/api/auth/local`)
 - `VITE_STRAPI_USERS_ENDPOINT`: users endpoint (default `/api/users`)
 - `VITE_STRAPI_ACTIVITIES_ENDPOINT`: activities endpoint (default `/api/activities`)
+- `FRONTEND_PORT`: optional local port for Docker (default `5173`)
 
-## Local Development
+## Run With Docker (Recommended for all students)
+
+1. Clone the repository.
+2. Create `.env` from `.env.example` and adjust `VITE_STRAPI_URL` if required.
+3. Start the frontend container:
+
+```bash
+docker compose up --build
+```
+
+Open the app on `http://localhost:5173` (or your configured `FRONTEND_PORT`).
+
+### Notes for Strapi URL
+
+- Default Docker setup uses `http://host.docker.internal:1337` so the frontend container can reach a Strapi API running on the host machine.
+- If Strapi runs in another container stack or server, set `VITE_STRAPI_URL` in `.env` to that reachable URL.
+
+## Local Development Without Docker
 
 Install dependencies:
 
@@ -52,6 +70,14 @@ Build for production:
 ```bash
 npm run build
 ```
+
+## Team Collaboration Workflow (15 Students)
+
+- Keep `main` always deployable.
+- Create a feature branch per task/student, e.g. `student/alex-login-fix`.
+- Open Pull Requests into `frontend-prototype` for integration testing.
+- Merge `frontend-prototype` into `main` only after validation.
+- Use Docker (`docker compose up --build`) before opening a Pull Request to guarantee reproducibility.
 
 ## Strapi Configuration Notes
 

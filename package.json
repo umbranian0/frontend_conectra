@@ -11,9 +11,10 @@
     "preview": "vite preview",
     "preview:host": "vite preview --host 0.0.0.0 --port 4173",
     "docker:up": "docker compose up --build",
+    "docker:up:detached": "docker compose up --build -d",
     "docker:down": "docker compose down",
-    "docker:up:full": "docker compose -f docker-compose.yml -f ../backend_conectra/docker-compose.yml up --build",
-    "docker:down:full": "docker compose -f docker-compose.yml -f ../backend_conectra/docker-compose.yml down"
+    "docker:logs": "docker compose logs -f frontend",
+    "docker:rebuild": "docker compose build --no-cache"
   },
   "keywords": [
     "react",
