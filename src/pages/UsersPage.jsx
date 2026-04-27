@@ -1,4 +1,5 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchUsers } from '../api/usersApi';
 import PageContainer from '../components/PageContainer';
 import { useAuth } from '../features/auth/useAuth';
@@ -9,20 +10,29 @@ function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [requiresLogin, setRequiresLogin] = useState(false);
 
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
     setError('');
+    setRequiresLogin(false);
 
     try {
       const nextUsers = await fetchUsers(token);
       setUsers(nextUsers);
     } catch (requestError) {
+      if (requestError?.status === 401 || requestError?.status === 403) {
+        setRequiresLogin(true);
+        setUsers([]);
+        return;
+      }
+
       const message =
         requestError instanceof Error
           ? requestError.message
           : 'Unable to load users from Strapi.';
       setError(message);
+      setUsers([]);
     } finally {
       setIsLoading(false);
     }
@@ -35,7 +45,7 @@ function UsersPage() {
   return (
     <PageContainer
       title="Users"
-      description="Basic index page consuming the Strapi users endpoint."
+      description="Public users page. Login is required only if Strapi endpoint permissions are private."
       actions={
         <button type="button" className="button button-secondary" onClick={loadUsers}>
           Refresh
@@ -45,11 +55,17 @@ function UsersPage() {
       {isLoading ? <p className="status-message">Loading users...</p> : null}
       {!isLoading && error ? <p className="status-error">{error}</p> : null}
 
-      {!isLoading && !error && users.length === 0 ? (
+      {!isLoading && requiresLogin ? (
+        <p className="status-message">
+          Users endpoint requires authentication. <Link to="/login" className="status-inline-link">Login</Link> to continue.
+        </p>
+      ) : null}
+
+      {!isLoading && !error && !requiresLogin && users.length === 0 ? (
         <p className="status-message">No users were returned by Strapi.</p>
       ) : null}
 
-      {!isLoading && !error && users.length > 0 ? (
+      {!isLoading && !error && !requiresLogin && users.length > 0 ? (
         <ul className="entity-list">
           {users.map((user) => (
             <li key={user.id ?? user.documentId ?? user.email} className="entity-card">
