@@ -32,7 +32,9 @@ Create a local `.env` file from `.env.example`.
 - `VITE_STRAPI_AUTH_ENDPOINT`: auth endpoint (default `/api/auth/local`)
 - `VITE_STRAPI_USERS_ENDPOINT`: users endpoint (default `/api/users`)
 - `VITE_STRAPI_ACTIVITIES_ENDPOINT`: activities endpoint (default `/api/activities`)
-- `FRONTEND_PORT`: optional local port for Docker (default `5173`)
+- `FRONTEND_PORT`: optional frontend port for Vite and Docker (default `5173`)
+- `VITE_HMR_HOST`: optional HMR host (default `localhost`)
+- `VITE_HMR_PROTOCOL`: optional HMR protocol (default `ws`)
 
 ## Run With Docker (Recommended for all students)
 
@@ -70,6 +72,21 @@ Build for production:
 ```bash
 npm run build
 ```
+
+### WebSocket / HMR Troubleshooting
+
+If the browser shows Vite errors such as module load failures or `failed to connect to websocket`:
+
+1. Do not run both Docker frontend and local `npm run dev` at the same time on the same `FRONTEND_PORT`.
+2. Stop one of them before starting the other:
+
+```bash
+docker compose down
+```
+
+3. Restart the selected frontend mode and open the same port configured in `FRONTEND_PORT`.
+
+Vite now uses `strictPort`, so if the port is occupied it will fail fast instead of silently switching to another port.
 
 ## Team Collaboration Workflow (15 Students)
 
